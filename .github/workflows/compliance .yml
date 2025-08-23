@@ -1,18 +1,30 @@
+
+name: FinNetX Compliance CI
+
+on:
+  push:
+    branches: [ "main" ]
+  issues:
+    types: [opened]
+
 jobs:
   compliance_check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Run commit compliance check
         run: |
           if git log -1 --pretty=%B | grep -iq "WIP"; then
-            echo "WIP commits not allowed"
+            echo "❌ WIP commits are not allowed."
             exit 1
+          else
+            echo "✅ Commit message passed compliance check."
           fi
 
       - name: Log issue to Google Sheets (via Zapier webhook)
         run: |
-          curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_ZAP_ID/ \
+          curl -X POST ${{ secrets.ZAPIER_WEBHOOK }} \
           -H "Content-Type: application/json" \
           -d '{"title": "${{ github.event.issue.title }}", "assignee": "${{ github.event.issue.assignee.login }}"}'
