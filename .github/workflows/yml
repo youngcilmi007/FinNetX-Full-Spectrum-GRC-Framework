@@ -1,0 +1,47 @@
+name: FinNetX Compliance & Security
+
+on:
+  issues:
+    types: [opened]
+  push:
+    branches: [main]
+
+jobs:
+  security_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Docker security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: your-docker-image:latest
+          format: table
+
+  enforce_compliance:
+    runs-on: ubuntu-latest
+    needs: security_scan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Enforce commit compliance rules
+        run: |
+          if git log -1 --pretty=%B | grep -iq "WIP"; then
+            echo "WIP commits not allowed" 
+            exit 1
+          fi
+
+  notify_zapier:
+    runs-on: ubuntu-latest
+    needs: enforce_compliance
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Trigger Zapier Webhook
+        run: |
+          curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_ZAP_ID/ \
+          -H "Content-Type: application/json" \
+          -d '{"branch": "${{ github.ref }}","latest_commit": "${{ github.sha }}"}'
