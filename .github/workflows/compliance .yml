@@ -1,30 +1,57 @@
 
-name: FinNetX Compliance CI
-
-on:
-  push:
-    branches: [ "main" ]
-  issues:
-    types: [opened]
-
-jobs:
+jobs
   compliance_check:
+  compliance_check
     runs-on: ubuntu-latest
+  compliance_check
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    runs-on ubuntu-latest
+      - uses: actions/checkout@v4
+    runs-on
 
+    steps
       - name: Run commit compliance check
-        run: |
-          if git log -1 --pretty=%B | grep -iq "WIP"; then
-            echo "❌ WIP commits are not allowed."
-            exit 1
-          else
-            echo "✅ Commit message passed compliance check."
-          fi
+    ubuntu-latest
+      - uses:actions/checkout@v4
+    steps
+      - uses
+      actions/checkout@v4
 
-      - name: Log issue to Google Sheets (via Zapier webhook)
-        run: |
-          curl -X POST ${{ secrets.ZAPIER_WEBHOOK }} \
-          -H "Content-Type: application/json" \
-          -d '{"title": "${{ github.event.issue.title }}", "assignee": "${{ github.event.issue.assignee.login }}"}'
+      - name:Run commit compliance check
+      - name
+         run: |
+         run: |
+          if git log -1 --pretty=%B | grep -iq "WIP"; then
+      Run commit compliance check
+            echo "WIP commits not allowed"
+        run:|
+            exit 1
+           if git log -1 --pretty=%B | grep -iq "WIP"; then
+          fi
+           if git log -1 --pretty=%B | grep -iq "WIP"; then
+             echo "WIP commits not allowed"
+             echo "WIP commits not allowed"
+             exit 1
+             exit 1
+           fi
+           fi
+
+       - name: Log issue to Google Sheets (via Zapier webhook)
+       - name: Log issue to Google Sheets (via Zapier webhook)
+      - name
+         run: |
+         run: |
+          curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_ZAP_ID/ \
+      Log issue to Google Sheets (via Zapier webhook)
+        run
+        |
+           curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_ZAP_ID/ \
+           curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_ZAP_ID/ \
+           -H "Content-Type: application/json" \
+           -H "Content-Type: application/json" \
+          -H "Content-Type
+           -d '{"title": "${{ github.event.issue.title }}", "assignee": "${{ github.event.issue.assignee.login }}"}'
+           -d '{"title": "${{ github.event.issue.title }}", "assignee": "${{ github.event.issue.assignee.login }}"}'
+          application/json" \
+          -d '{"title"
+          "${{ github.event.issue.title }}", "assignee" "${{ github.event.issue.assignee.login }}"}'
