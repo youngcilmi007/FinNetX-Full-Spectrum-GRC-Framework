@@ -1,6 +1,6 @@
 
 jobs
-  compliance_check:
+  compliance_check
   compliance_check
     runs-on: ubuntu-latest
   compliance_check
