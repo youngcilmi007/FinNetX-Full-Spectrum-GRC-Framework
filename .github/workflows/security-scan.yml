@@ -1,0 +1,66 @@
+name: Security Scan (Trivy)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  trivy_fs_scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          ignore-unfixed: true
+          format: json
+          output: trivy-results.json
+          severity: HIGH,CRITICAL
+          exit-code: 0  # don't fail job; we'll decide after parsing
+
+      - name: Create issue if HIGH/CRITICAL found
+        id: issue_guard
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('trivy-results.json','utf8'));
+            let high = 0, critical = 0;
+            (results.Results||[]).forEach(r=>{
+              (r.Vulnerabilities||[]).forEach(v=>{
+                if (v.Severity === 'HIGH') high++;
+                if (v.Severity === 'CRITICAL') critical++;
+              });
+            });
+            core.setOutput('high', String(high));
+            core.setOutput('critical', String(critical));
+            if (high + critical > 0) {
+              const body = [
+                `Automated Trivy scan detected **${high} HIGH** and **${critical} CRITICAL** vulnerabilities.`,
+                '',
+                'Artifacts: `trivy-results.json` attached to this run.',
+                '',
+                'Labels: security, compliance'
+              ].join('\n');
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Trivy findings: ${high} HIGH / ${critical} CRITICAL`,
+                body,
+                labels: ['security','compliance','automated']
+              });
+            }
+
+      - name: Fail pipeline on CRITICAL
+        if: ${{ steps.issue_guard.outputs.critical != '0' }}
+        run: |
+          echo "❌ CRITICAL vulnerabilities found. Failing build."
+          exit 1
