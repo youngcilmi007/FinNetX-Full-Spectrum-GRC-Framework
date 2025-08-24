@@ -1,44 +1,46 @@
 # FinNetX: Full-Spectrum GRC Framework
 
-> A comprehensive Governance, Risk, and Compliance (GRC) framework for fintech organizations, integrated with DevOps pipelines for automated compliance, risk, and security tracking.
+> A complete Governance, Risk, and Compliance (GRC) framework designed for fintech organizations. Provides structured policies, risk tracking, audit templates, and security guidelines in one place.
 
 ---
 
 ## Overview
 
-FinNetX provides a full-spectrum GRC framework covering:
+FinNetX delivers a full GRC solution:
 
-- **Governance:** Policies, workflows, and decision tracking.  
-- **Risk:** Identification, assessment, mitigation, and continuous tracking.  
-- **Compliance:** Automated checks, regulatory adherence, and reporting.  
-- **Audit:** Evidence collection, monitoring, and reporting automation.  
-- **Security:** Vulnerability scanning, DevSecOps practices, and incident tracking.
+- **Governance:** Policies, workflows, and decision tracking  
+- **Risk:** Risk identification, assessment, and mitigation strategies  
+- **Compliance:** Templates and guides for regulatory adherence  
+- **Audit:** Evidence collection, monitoring, and reporting templates  
+- **Security:** Guidelines for vulnerability management and best practices  
 
-By embedding GRC directly into DevOps pipelines, FinNetX ensures compliance is **continuous, automated, and auditable**.
-
----
-
-## Features
-
-- ✅ Automated vulnerability scanning (Trivy, Snyk, etc.)  
-- ✅ Compliance checks integrated in CI/CD pipelines  
-- ✅ Risk register and audit evidence tracking  
-- ✅ Governance dashboards for decision tracking  
-- ✅ DevOps integration via GitHub Actions and automation scripts
-  
+This framework provides **clarity and structure** for teams to manage governance, risk, compliance, audit, and security effectively.
 
 ---
 
-## Folder Structure## Folder Structure
-- Each folder contains templates, scripts, and documentation.  
-- Security scans are integrated via GitHub Actions.  
-- Compliance and audit reports are automatically generated and stored.
+## Folder Structure
+- Each folder contains templates, documentation, and guidance for its domain.  
+- Designed for easy adoption and adaptation to any fintech or enterprise environment.
 
 ---
 
-## Getting Started
+## How to Use
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/<your-org>/FinNetX-Full-Spectrum-GRC-Framework.git
-cd FinNetX-Full-Spectrum-GRC-Framework
+1. Browse the folders relevant to your focus area.  
+2. Use the templates to document processes, risks, and compliance checks.  
+3. Adapt the guidance to your organization’s specific policies and workflows.  
+4. Track improvements and updates as your GRC program evolves.
+
+---
+
+## Contributing
+
+- Suggestions and improvements are welcome!  
+- Use clear naming and organization for any additions or updates.  
+- Ensure new templates or documents are consistent with the framework’s structure.
+
+---
+
+## License
+
+MIT License. See `LICENSE` file for details.
