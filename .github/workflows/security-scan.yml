@@ -13,52 +13,71 @@ jobs:
       contents: read
       issues: write
     steps:
+      # 1️⃣ Checkout repo
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2️⃣ Run Trivy filesystem scan
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v1.11.0
         with:
           scan-type: fs
           ignore-unfixed: true
           format: json
           output: trivy-results.json
           severity: HIGH,CRITICAL
-          exit-code: 0  # don't fail job; we'll decide after parsing
+          exit-code: 0  # let custom logic decide fail
 
+      # 3️⃣ Create issue if HIGH/CRITICAL found (deduplicated)
       - name: Create issue if HIGH/CRITICAL found
         id: issue_guard
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
+            const core = require('@actions/core');
+
             const results = JSON.parse(fs.readFileSync('trivy-results.json','utf8'));
             let high = 0, critical = 0;
-            (results.Results||[]).forEach(r=>{
-              (r.Vulnerabilities||[]).forEach(v=>{
+            (results.Results || []).forEach(r => {
+              (r.Vulnerabilities || []).forEach(v => {
                 if (v.Severity === 'HIGH') high++;
                 if (v.Severity === 'CRITICAL') critical++;
               });
             });
+
             core.setOutput('high', String(high));
             core.setOutput('critical', String(critical));
+
             if (high + critical > 0) {
-              const body = [
-                `Automated Trivy scan detected **${high} HIGH** and **${critical} CRITICAL** vulnerabilities.`,
-                '',
-                'Artifacts: `trivy-results.json` attached to this run.',
-                '',
-                'Labels: security, compliance'
-              ].join('\n');
-              await github.rest.issues.create({
+              // Check for existing open issues with same title pattern
+              const title = `Trivy findings: ${high} HIGH / ${critical} CRITICAL`;
+              const { data: issues } = await github.rest.issues.listForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Trivy findings: ${high} HIGH / ${critical} CRITICAL`,
-                body,
-                labels: ['security','compliance','automated']
+                state: 'open',
+                labels: 'automated'
               });
+
+              const exists = issues.some(issue => issue.title === title);
+              if (!exists) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title,
+                  body: [
+                    `Automated Trivy scan detected **${high} HIGH** and **${critical} CRITICAL** vulnerabilities.`,
+                    '',
+                    'Artifacts: `trivy-results.json` attached to this run.',
+                    '',
+                    'Labels: security, compliance'
+                  ].join('\n'),
+                  labels: ['security','compliance','automated']
+                });
+              }
             }
 
+      # 4️⃣ Fail pipeline on CRITICAL (optional: also fail on HIGH if desired)
       - name: Fail pipeline on CRITICAL
         if: ${{ steps.issue_guard.outputs.critical != '0' }}
         run: |
