@@ -22,8 +22,19 @@ By embedding GRC directly into CI/CD pipelines, FinNetX ensures compliance is **
 
 ## Features
 
-- ✅ Automated vulnerability scanning (Trivy, Snyk, etc.)  
-- ✅ Compliance checks integrated in CI/CD pipelines  
+- ✅ Automated vulnerability scanning (Trivy, Snyk, etc.)  - Each folder contains templates, automation scripts, and documentation for its domain.  
+- Security scans are integrated via GitHub Actions.  
+- Compliance reports are auto-generated and stored for audits.
+
+---
+
+## Getting Started
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/<your-org>/FinNetX-Full-Spectrum-GRC-Framework.git
+cd FinNetX-Full-Spectrum-GRC-Framework- ✅ Compliance checks integrated in CI/CD pipelines  
 - ✅ Risk register and audit evidence tracking  
 - ✅ Governance dashboards for decision tracking  
 - ✅ DevOps integration via GitHub Actions, Zapier, and scripts  
